@@ -1,0 +1,18 @@
+base:
+  project_name : waffer_project
+  random_state : 34
+  target_col : Good/Bad
+  test_size : 0.20
+
+s3_data_source: 
+  bucket_name : wafferbucket
+  bucket_folder_name : waffer_batch_files
+  s3_root_folder_prefix : waffer
+  s3_folder_list : ['waffer_batch_files']
+  region_name : ap-south-1
+
+artifacts:
+  artifacts_dir : artifacts
+  
+  raw_batch_files_dir : artifacts/raw_batch_files_dir
+  raw_batch_files : artifacts/raw_batch_files

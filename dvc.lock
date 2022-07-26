@@ -1,0 +1,21 @@
+schema: '2.0'
+stages:
+  01_load_data:
+    cmd: python src/01_load_and_save.py --config=params.yaml
+    deps:
+    - path: src/01_load_and_save.py
+      md5: 7631ec42d54e94e3752c3d4307121796
+      size: 2032
+    params:
+      params.yaml:
+        s3_data_source.bucket_folder_name: waffer_batch_files
+        s3_data_source.bucket_name: wafferbucket
+        s3_data_source.region_name: ap-south-1
+        s3_data_source.s3_folder_list:
+        - waffer_batch_files
+        s3_data_source.s3_root_folder_prefix: waffer
+    outs:
+    - path: artifacts/waffer_batch_files
+      md5: e56894b0812b99797276021d14dbaf75.dir
+      size: 13625126
+      nfiles: 41

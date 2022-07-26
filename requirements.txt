@@ -1,0 +1,8 @@
+-e .
+# data version control
+dvc
+
+# s3 Bucket
+boto3
+
+python-dotenv==0.20.0

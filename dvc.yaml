@@ -1,0 +1,13 @@
+stages:
+  01_load_data:
+    cmd: python src/01_load_and_save.py --config=params.yaml
+    deps: 
+      - src/01_load_and_save.py
+    params:
+      - s3_data_source.bucket_name
+      - s3_data_source.bucket_folder_name
+      - s3_data_source.s3_root_folder_prefix
+      - s3_data_source.s3_folder_list
+      - s3_data_source.region_name
+    outs:
+      - artifacts/waffer_batch_files
