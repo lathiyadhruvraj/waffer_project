@@ -3,7 +3,7 @@ base:
   random_state : 34
   target_col : Good/Bad
   test_size : 0.20
-  
+  remove_cols : ['Wafer']
 
 s3_data_source: 
   bucket_name : wafferbucket
@@ -19,3 +19,13 @@ artifacts:
     s3_data_dir : artifacts/waffer_batch_files
     good_files_dir : artifacts/02_validation/good_files
     bad_files_dir : artifacts/02_validation/bad_files
+
+  03_preprocess:
+    preprocess_dir : artifacts/03_preprocess
+    null_cols_fname : null_values.csv
+    preprocessed_files : artifacts/03_preprocess/preprocessed_files
+
+hyperparams:
+  KNNImputer:
+    n_neighbors : 3
+    weights : uniform

@@ -29,3 +29,17 @@ stages:
       - artifacts/02_validation/bad_files
       - artifacts/02_validation/good_files
 
+  03_preprocess:
+    cmd: python src/03_preprocess.py --config=params.yaml
+    deps: 
+      - src/03_preprocess.py
+      - artifacts/02_validation/good_files
+    params:
+      - artifacts.03_preprocess.preprocess_dir
+      - artifacts.03_preprocess.null_cols_fname
+      - artifacts.03_preprocess.preprocessed_files
+      - hyperparams.KNNImputer.n_neighbors
+      - hyperparams.KNNImputer.weights
+    outs:
+      - artifacts/03_preprocess/preprocessed_files
+      

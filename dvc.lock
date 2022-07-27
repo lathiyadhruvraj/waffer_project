@@ -47,3 +47,25 @@ stages:
       md5: afabd4473b9fadae1b2bb83b7df72e58.dir
       size: 3036137
       nfiles: 9
+  03_preprocess:
+    cmd: python src/03_preprocess.py --config=params.yaml
+    deps:
+    - path: artifacts/02_validation/good_files
+      md5: afabd4473b9fadae1b2bb83b7df72e58.dir
+      size: 3036137
+      nfiles: 9
+    - path: src/03_preprocess.py
+      md5: 7c0707629c1ac05c6a7bc732824b5930
+      size: 5640
+    params:
+      params.yaml:
+        artifacts.03_preprocess.null_cols_fname: null_values.csv
+        artifacts.03_preprocess.preprocess_dir: artifacts/03_preprocess
+        artifacts.03_preprocess.preprocessed_files: artifacts/03_preprocess/preprocessed_files
+        hyperparams.KNNImputer.n_neighbors: 3
+        hyperparams.KNNImputer.weights: uniform
+    outs:
+    - path: artifacts/03_preprocess/preprocessed_files
+      md5: 31b58d559636667de164de4cd4934ea6.dir
+      size: 2990486
+      nfiles: 9
