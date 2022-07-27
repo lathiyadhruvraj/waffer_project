@@ -3,6 +3,7 @@ base:
   random_state : 34
   target_col : Good/Bad
   test_size : 0.20
+  
 
 s3_data_source: 
   bucket_name : wafferbucket
@@ -14,5 +15,7 @@ s3_data_source:
 artifacts:
   artifacts_dir : artifacts
   
-  raw_batch_files_dir : artifacts/raw_batch_files_dir
-  raw_batch_files : artifacts/raw_batch_files
+  02_validation:
+    s3_data_dir : artifacts/waffer_batch_files
+    good_files_dir : artifacts/02_validation/good_files
+    bad_files_dir : artifacts/02_validation/bad_files

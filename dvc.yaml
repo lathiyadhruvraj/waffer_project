@@ -11,3 +11,21 @@ stages:
       - s3_data_source.region_name
     outs:
       - artifacts/waffer_batch_files
+
+  02_validation:
+    cmd: python src/02_validation.py --config=params.yaml --schema=schema.yaml
+    deps: 
+      - src/02_validation.py
+      - artifacts/waffer_batch_files
+    params:
+      - schema.yaml:
+        - LengthOfDateStampInFile
+        - LengthOfTimeStampInFile
+        - NumberofColumns
+      - artifacts.02_validation.s3_data_dir
+      - artifacts.02_validation.good_files_dir
+      - artifacts.02_validation.bad_files_dir
+    outs:
+      - artifacts/02_validation/bad_files
+      - artifacts/02_validation/good_files
+

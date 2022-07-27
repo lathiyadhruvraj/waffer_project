@@ -6,3 +6,5 @@ dvc
 boto3
 
 python-dotenv==0.20.0
+
+pandas

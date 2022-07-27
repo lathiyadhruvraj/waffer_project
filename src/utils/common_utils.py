@@ -11,13 +11,19 @@ def read_params(config_path: str) -> dict:
     # logging.info(f"read parameters")
     return config
 
-def clean_prev_dirs_if_exists(dir_path: str):
-    if os.path.isdir(dir_path):
-        shutil.rmtree(dir_path)
+def clean_prev_dirs_if_exists(dir_path_list: list):
+    for dir_path in dir_path_list:
+        if os.path.isdir(dir_path):
+            shutil.rmtree(dir_path)
     # logging.info(f"cleaned existing artifacts directory at {dir_path}")
 
-
-def create_dir(dirs: list):
+def create_dirs(dirs: list):
     for dir_path in dirs:
         os.makedirs(dir_path, exist_ok=True)
         # logging.info(f"created directory at {dir_path}")
+
+def move_files(file_path_list: list, dir: str, remove_file=False):
+    for file in file_path_list:
+        shutil.copy(file, dir)
+        if remove_file:
+            os.remove(file)

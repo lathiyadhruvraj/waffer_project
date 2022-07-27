@@ -19,3 +19,31 @@ stages:
       md5: e56894b0812b99797276021d14dbaf75.dir
       size: 13625126
       nfiles: 41
+  02_validation:
+    cmd: python src/02_validation.py --config=params.yaml --schema=schema.yaml
+    deps:
+    - path: artifacts/waffer_batch_files
+      md5: e56894b0812b99797276021d14dbaf75.dir
+      size: 13625126
+      nfiles: 41
+    - path: src/02_validation.py
+      md5: 9a34ef51a66d6f2ec7be4c6d62a8cd5d
+      size: 6024
+    params:
+      params.yaml:
+        artifacts.02_validation.bad_files_dir: artifacts/02_validation/bad_files
+        artifacts.02_validation.good_files_dir: artifacts/02_validation/good_files
+        artifacts.02_validation.s3_data_dir: artifacts/waffer_batch_files
+      schema.yaml:
+        LengthOfDateStampInFile: 8
+        LengthOfTimeStampInFile: 6
+        NumberofColumns: 592
+    outs:
+    - path: artifacts/02_validation/bad_files
+      md5: 930fdd03dce096ddc5f3f5f3ba954977.dir
+      size: 10726994
+      nfiles: 32
+    - path: artifacts/02_validation/good_files
+      md5: afabd4473b9fadae1b2bb83b7df72e58.dir
+      size: 3036137
+      nfiles: 9
