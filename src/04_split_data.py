@@ -1,11 +1,9 @@
 from sklearn.model_selection import train_test_split
 import argparse
 import os 
-from utils.common_utils import read_params, create_dirs, clean_prev_dirs_if_exists, get_data
-import pandas as pd
+from utils.common_utils import read_params, create_dirs, clean_prev_dirs_if_exists
 from tqdm import tqdm
-import numpy as np
-
+import pandas as pd
 
 class SplitData():
     def __init__(self, config_path):
@@ -30,8 +28,8 @@ class SplitData():
 
             for i in tqdm(range(len(files_list))):
                 
-                X_data = get_data(os.path.join(self.preprocessed_files, files_list[i]))
-                Y_data = get_data(os.path.join(self.preprocessed_files, 'Y' + files_list[i][1:]))
+                X_data = pd.read_csv(os.path.join(self.preprocessed_files, files_list[i]))
+                Y_data = pd.read_csv(os.path.join(self.preprocessed_files, 'Y' + files_list[i][1:]))
               
                 x_train, x_test, y_train, y_test = train_test_split(X_data, Y_data, test_size=self.test_size, random_state=self.random_state)
 
@@ -45,7 +43,7 @@ class SplitData():
 
 
 if __name__ == '__main__':
-    print("\n", 10*"===", " 03 Split Data Stage ", 10*"===", "\n")
+    print("\n", 10*"===", " 04 Split Data Stage ", 10*"===", "\n")
     args = argparse.ArgumentParser()
     args.add_argument('--config', default='params.yaml')
     parsed_args = args.parse_args()

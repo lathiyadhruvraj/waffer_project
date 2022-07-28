@@ -121,7 +121,8 @@ class Preprocess():
                 col_to_drop = self.__get_columns_with_zero_std_deviation(X)
                 X = self.__remove_columns(X, col_to_drop)
 
-                X.to_csv(os.path.join(self.preprocessed_files_dir, filename))
+                X.to_csv(os.path.join(self.preprocessed_files_dir, 'X_'+filename))
+                Y.to_csv(os.path.join(self.preprocessed_files_dir, 'Y_'+filename))
 
         except Exception as e:
             raise e

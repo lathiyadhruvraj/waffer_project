@@ -25,6 +25,13 @@ artifacts:
     null_cols_fname : null_values.csv
     preprocessed_files : artifacts/03_preprocess/preprocessed_files
 
+  04_split_data:
+    split_data_sir : artifacts/04_split_data
+    x_train_dir : artifacts/04_split_data/x_train
+    x_test_dir : artifacts/04_split_data/x_test
+    y_train_dir : artifacts/04_split_data/y_train
+    y_test_dir : artifacts/04_split_data/y_test
+
 hyperparams:
   KNNImputer:
     n_neighbors : 3
