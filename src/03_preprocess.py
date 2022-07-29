@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 import numpy as np
 from sklearn.impute import KNNImputer
-
+ 
 class Preprocess():
 
     def __init__(self, config_path):
@@ -87,9 +87,27 @@ class Preprocess():
         col_to_drop=[]
         try:
             for x in columns:
-                if data_n[x]['std'] == 0: # check if standard deviation is zero
+                if (data_n[x]['std'] < 0.001) and (data_n[x]['std'] > -0.001): # check if standard deviation is zero
+                # if data_n[x]['std'] == 0:
                     col_to_drop.append(x)  # prepare the list of columns with standard deviation zero
             return col_to_drop
+        except Exception as e:
+            raise e
+    
+    def __high_correlation_drop(self, data):
+        try:	    
+            # Create correlation matrix
+            corr_matrix = data.corr().abs()
+
+            # Select upper triangle of correlation matrix
+            upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+
+            # Find features with correlation greater than 0.95
+            to_drop = [column for column in upper.columns if any(upper[column] > 0.95)]
+
+            # Drop features 
+            data.drop(to_drop, axis=1, inplace=True)
+
         except Exception as e:
             raise e
 
@@ -98,31 +116,37 @@ class Preprocess():
     def preprocessing_controller(self):
         try:
             files_list = os.listdir(self.artifacts_good_files)
+            all_files_data = pd.DataFrame()
 
             for i in tqdm(range(len(files_list))):
                 filename = files_list[i]
 
                 data = self.__get_data(os.path.join(self.artifacts_good_files, filename))
 
-                columns = self.config['base']['remove_cols']
-                useful_data = self.__remove_columns(data, columns)
+                all_files_data = pd.concat([all_files_data, data])
+            
+            columns = self.config['base']['remove_cols']
+            useful_data = self.__remove_columns(all_files_data, columns)
 
-                target_column_name = self.config['base']['target_col']
-                X, Y = self.__separate_label_feature(useful_data, target_column_name)
+            target_column_name = self.config['base']['target_col']
+            X, Y = self.__separate_label_feature(useful_data, target_column_name)
 
-                fname = self.config['artifacts']['03_preprocess']['null_cols_fname']
-                null_present = self.__is_null_present( X, fname)
+            fname = self.config['artifacts']['03_preprocess']['null_cols_fname']
+            null_present = self.__is_null_present(X, fname)
 
-                if null_present:
-                    n_neighbors = self.config['hyperparams']['KNNImputer']['n_neighbors']
-                    weights = self.config['hyperparams']['KNNImputer']['weights']
-                    X = self.__impute_missing_values(X, n_neighbors, weights)
+            if null_present:
+                n_neighbors = self.config['hyperparams']['KNNImputer']['n_neighbors']
+                weights = self.config['hyperparams']['KNNImputer']['weights']
+                X = self.__impute_missing_values(X, n_neighbors, weights)
 
-                col_to_drop = self.__get_columns_with_zero_std_deviation(X)
-                X = self.__remove_columns(X, col_to_drop)
+            col_to_drop = self.__get_columns_with_zero_std_deviation(X)
+            X = self.__remove_columns(X, col_to_drop)
 
-                X.to_csv(os.path.join(self.preprocessed_files_dir, 'X_'+filename))
-                Y.to_csv(os.path.join(self.preprocessed_files_dir, 'Y_'+filename))
+            self.__high_correlation_drop(X)
+            
+            Y = Y.replace(-1, 0)
+            X.to_csv(os.path.join(self.preprocessed_files_dir, "X_all.csv"), index=False, header=False)
+            Y.to_csv(os.path.join(self.preprocessed_files_dir, 'Y_all.csv'), index=False, header=False)
 
         except Exception as e:
             raise e

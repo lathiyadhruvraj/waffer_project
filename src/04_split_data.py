@@ -11,33 +11,25 @@ class SplitData():
 
         self.preprocessed_files = self.config['artifacts']['03_preprocess']['preprocessed_files']
         
-        self.x_train = self.config['artifacts']['04_split_data']['x_train_dir']
-        self.x_test  = self.config['artifacts']['04_split_data']['x_test_dir']
-        self.y_train = self.config['artifacts']['04_split_data']['y_train_dir']
-        self.y_test  = self.config['artifacts']['04_split_data']['y_test_dir']
+        self.split_data_dir = self.config['artifacts']['04_split_data']['split_data_dir']
+        clean_prev_dirs_if_exists([self.split_data_dir])
+        create_dirs([self.split_data_dir])
 
-        clean_prev_dirs_if_exists([self.x_train, self.x_test, self.y_train, self.y_test])
-        create_dirs([self.x_train, self.x_test, self.y_train, self.y_test])
-
-        self.random_state = self.config['base']['random_state']
+        self.random_state = self.config['base']['random_state'][0]
         self.test_size = self.config['base']['test_size']
 
     def split_the_data(self):
         try:
-            files_list = [f for f in os.listdir(self.preprocessed_files) if f[0]=='X']
+            X_data = pd.read_csv(os.path.join(self.preprocessed_files, "X_all.csv"))
+            Y_data = pd.read_csv(os.path.join(self.preprocessed_files, "Y_all.csv"))
+        
+            x_train, x_test, y_train, y_test = train_test_split(X_data, Y_data, test_size=self.test_size, random_state=self.random_state)
 
-            for i in tqdm(range(len(files_list))):
-                
-                X_data = pd.read_csv(os.path.join(self.preprocessed_files, files_list[i]))
-                Y_data = pd.read_csv(os.path.join(self.preprocessed_files, 'Y' + files_list[i][1:]))
-              
-                x_train, x_test, y_train, y_test = train_test_split(X_data, Y_data, test_size=self.test_size, random_state=self.random_state)
-
-                x_train.to_csv(os.path.join(self.x_train, files_list[i][2:]), index=False)
-                x_test.to_csv(os.path.join(self.x_test, files_list[i][2:]), index=False)
-                y_train.to_csv(os.path.join(self.y_train, files_list[i][2:]), index=False)
-                y_test.to_csv(os.path.join(self.y_test, files_list[i][2:]), index=False)
-            
+            x_train.to_csv(os.path.join(self.split_data_dir,"X_train.csv"), index=False)
+            x_test.to_csv(os.path.join(self.split_data_dir,"X_test.csv"), index=False)
+            y_train.to_csv(os.path.join(self.split_data_dir,"Y_train.csv"), index=False)
+            y_test.to_csv(os.path.join(self.split_data_dir,"Y_test.csv"), index=False)
+                    
         except Exception as e:
             raise e 
 
@@ -51,5 +43,6 @@ if __name__ == '__main__':
     try:      
         obj = SplitData(config_path=parsed_args.config)
         obj.split_the_data()
+        print("Splitting Completed")
     except Exception as e:
         raise e

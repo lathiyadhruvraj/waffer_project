@@ -4,6 +4,8 @@ import os
 import logging
 import shutil
 import pandas as pd
+import pickle
+
 
 def read_params(config_path: str) -> dict:
     try:
@@ -44,5 +46,15 @@ def get_data(file_path):
     try:
         data = pd.read_csv(file_path)
         return data
+    except Exception as e:
+        raise e
+
+def save_models(model_info_list):
+    try:
+        for model_info in model_info_list:
+            model, filename = model_info[0], model_info[1]
+            with open(filename, 'wb') as f:
+                pickle.dump(model, f) # save the model to file
+        return 1
     except Exception as e:
         raise e

@@ -51,14 +51,25 @@ stages:
     params:
       - base.random_state
       - base.test_size
-      - artifacts.04_split_data.split_data_sir
-      - artifacts.04_split_data.x_train_dir
-      - artifacts.04_split_data.x_test_dir
-      - artifacts.04_split_data.y_train_dir
-      - artifacts.04_split_data.y_test_dir
+      - artifacts.04_split_data.split_data_dir
     outs:
-      - artifacts/04_split_data/x_train
-      - artifacts/04_split_data/x_test
-      - artifacts/04_split_data/y_train
-      - artifacts/04_split_data/y_test
+      - artifacts/04_split_data/X_train.csv
+      - artifacts/04_split_data/X_test.csv
+      - artifacts/04_split_data/Y_train.csv
+      - artifacts/04_split_data/Y_test.csv
       
+  05_train:
+    cmd: python src/05_train.py --config=params.yaml
+    deps: 
+      - src/05_train.py
+      - artifacts/04_split_data/X_train.csv
+      - artifacts/04_split_data/Y_train.csv
+    params:
+      - base.random_state
+      - hyperparams.balanced_random_forest
+      - hyperparams.balanced_bagging_classifer
+      - hyperparams.easy_ensemble_classifier
+    outs:
+      - artifacts/05_train/brfc_model.sav
+      - artifacts/05_train/bbc_model.sav
+      - artifacts/05_train/eec_model.sav

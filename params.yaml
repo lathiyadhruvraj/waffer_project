@@ -1,6 +1,6 @@
 base:
   project_name : waffer_project
-  random_state : 34
+  random_state : [34]
   target_col : Good/Bad
   test_size : 0.20
   remove_cols : ['Wafer']
@@ -26,13 +26,38 @@ artifacts:
     preprocessed_files : artifacts/03_preprocess/preprocessed_files
 
   04_split_data:
-    split_data_sir : artifacts/04_split_data
-    x_train_dir : artifacts/04_split_data/x_train
-    x_test_dir : artifacts/04_split_data/x_test
-    y_train_dir : artifacts/04_split_data/y_train
-    y_test_dir : artifacts/04_split_data/y_test
+    split_data_dir : artifacts/04_split_data
 
+  05_train:
+    train_dir : artifacts/05_train
+  
 hyperparams:
   KNNImputer:
     n_neighbors : 3
     weights : uniform
+
+  balanced_random_forest:
+    model_name : brfc_model.sav
+    cv : 10
+    verbose : 3
+    n_estimators: [300, 350, 500]
+    criterion: ['gini', 'entropy']
+    max_depth: [2, 5, 1]  # range(2, 4, 1)
+    max_features: ['auto', 'log2']
+
+  balanced_bagging_classifer:
+    model_name : bbc_model.sav
+    cv : 10
+    verbose : 3
+    n_estimators: [150, 200]
+    sampling_strategy: [0.5, 1.0, 0.75]  # alpha = N_{samp-minority}/N_{samp-Majority} after  
+    replacement: [True, False]              #                      resampling.
+    
+  easy_ensemble_classifier:
+    model_name : eec_model.sav
+    cv : 10
+    verbose : 3
+    n_estimators: [150, 200]
+    sampling_strategy: [0.5, 1.0, 0.75]  # alpha = N_{samp-minority}/N_{samp-Majority} after  
+    replacement: [True, False]              #                      resampling.
+    

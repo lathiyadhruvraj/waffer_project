@@ -55,8 +55,8 @@ stages:
       size: 3036137
       nfiles: 9
     - path: src/03_preprocess.py
-      md5: 3e1cebaf6d1143ee849a299b59864e1c
-      size: 5729
+      md5: cfcc97a1cb3b088dda24ec57d5782d74
+      size: 6643
     params:
       params.yaml:
         artifacts.03_preprocess.null_cols_fname: null_values.csv
@@ -66,42 +66,107 @@ stages:
         hyperparams.KNNImputer.weights: uniform
     outs:
     - path: artifacts/03_preprocess/preprocessed_files
-      md5: ee37eaebd0200e72460236d9d95b60c9.dir
-      size: 2996317
-      nfiles: 18
+      md5: e31766ef9fbd992c8414c63e91149244.dir
+      size: 1741791
+      nfiles: 2
   04_split_data:
     cmd: python src/04_split_data.py --config=params.yaml
     deps:
     - path: artifacts/03_preprocess/preprocessed_files
-      md5: ee37eaebd0200e72460236d9d95b60c9.dir
-      size: 2996317
-      nfiles: 18
+      md5: e31766ef9fbd992c8414c63e91149244.dir
+      size: 1741791
+      nfiles: 2
     - path: src/04_split_data.py
-      md5: 207dfa36c228e9aca4da9e61dcc3429c
-      size: 2423
+      md5: fbac06f1b855537e9dd249543ee0b278
+      size: 1973
     params:
       params.yaml:
-        artifacts.04_split_data.split_data_sir: artifacts/04_split_data
-        artifacts.04_split_data.x_test_dir: artifacts/04_split_data/x_test
-        artifacts.04_split_data.x_train_dir: artifacts/04_split_data/x_train
-        artifacts.04_split_data.y_test_dir: artifacts/04_split_data/y_test
-        artifacts.04_split_data.y_train_dir: artifacts/04_split_data/y_train
-        base.random_state: 34
+        artifacts.04_split_data.split_data_dir: artifacts/04_split_data
+        base.random_state:
+        - 34
         base.test_size: 0.2
     outs:
-    - path: artifacts/04_split_data/x_test
-      md5: 5b3545665c3a7b4af8a17919974c0fa6.dir
-      size: 631617
-      nfiles: 9
-    - path: artifacts/04_split_data/x_train
-      md5: d9067d25586460feb3a8e5e1b9cc86f0.dir
-      size: 2381047
-      nfiles: 9
-    - path: artifacts/04_split_data/y_test
-      md5: 79c23710c255328d3fefbe980e70ac9c.dir
-      size: 1344
-      nfiles: 9
-    - path: artifacts/04_split_data/y_train
-      md5: 5cdf272ca44b3e556ec5197a5a17e5ff.dir
-      size: 4766
-      nfiles: 9
+    - path: artifacts/04_split_data/X_test.csv
+      md5: b5a7bb5c8b6d85362d6c85c6f338e20d
+      size: 347870
+    - path: artifacts/04_split_data/X_train.csv
+      md5: 0f18d6f8bd47e7e2d99a11e458c7a04f
+      size: 1379069
+    - path: artifacts/04_split_data/Y_test.csv
+      md5: c8d3cd8e951b560777ec8ce3c0be7ba9
+      size: 507
+    - path: artifacts/04_split_data/Y_train.csv
+      md5: cd624b8fa97a5a20b4e47266ce64b961
+      size: 2007
+  05_train:
+    cmd: python src/05_train.py --config=params.yaml
+    deps:
+    - path: artifacts/04_split_data/X_train.csv
+      md5: 0f18d6f8bd47e7e2d99a11e458c7a04f
+      size: 1379069
+    - path: artifacts/04_split_data/Y_train.csv
+      md5: cd624b8fa97a5a20b4e47266ce64b961
+      size: 2007
+    - path: src/05_train.py
+      md5: fd5a9dbf536ce9defd6186b5d7589c02
+      size: 9468
+    params:
+      params.yaml:
+        base.random_state:
+        - 34
+        hyperparams.balanced_bagging_classifer:
+          model_name: bbc_model.sav
+          cv: 10
+          verbose: 3
+          n_estimators:
+          - 150
+          - 200
+          sampling_strategy:
+          - 0.5
+          - 1.0
+          - 0.75
+          replacement:
+          - true
+          - false
+        hyperparams.balanced_random_forest:
+          model_name: brfc_model.sav
+          cv: 10
+          verbose: 3
+          n_estimators:
+          - 300
+          - 350
+          - 500
+          criterion:
+          - gini
+          - entropy
+          max_depth:
+          - 2
+          - 5
+          - 1
+          max_features:
+          - auto
+          - log2
+        hyperparams.easy_ensemble_classifier:
+          model_name: eec_model.sav
+          cv: 10
+          verbose: 3
+          n_estimators:
+          - 150
+          - 200
+          sampling_strategy:
+          - 0.5
+          - 1.0
+          - 0.75
+          replacement:
+          - true
+          - false
+    outs:
+    - path: artifacts/05_train/bbc_model.sav
+      md5: 36a4c2b9f3416a350365f51831824c2e
+      size: 577551
+    - path: artifacts/05_train/brfc_model.sav
+      md5: baf315960b91084652d0feca1aee7dfc
+      size: 1169917
+    - path: artifacts/05_train/eec_model.sav
+      md5: 7d86d6df4a76472ffecc59880ba14439
+      size: 8050929
