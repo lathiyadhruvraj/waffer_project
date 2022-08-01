@@ -1,0 +1,18 @@
+{
+    "eec_best_params": {
+        "best_replacement": false,
+        "best_sampling_strategy": 0.25,
+        "best_n_estimators": 180
+    },
+    "brf_best_params": {
+        "best_criterion": "gini",
+        "best_max_depth": 2,
+        "best_max_features": "auto",
+        "best_n_estimators": 400
+    },
+    "bbc_best_params": {
+        "best_replacement": false,
+        "best_sampling_strategy": 0.25,
+        "best_n_estimators": 180
+    }
+}
