@@ -70,6 +70,16 @@ stages:
       - hyperparams.balanced_bagging_classifer
       - hyperparams.easy_ensemble_classifier
     outs:
-      - artifacts/05_train/brfc_model.sav
-      - artifacts/05_train/bbc_model.sav
-      - artifacts/05_train/eec_model.sav
+      - artifacts/05_train
+
+
+  06_evaluate:
+    cmd: python src/06_evaluate.py --config=params.yaml
+    deps:
+      - src/06_evaluate.py
+      - artifacts/05_train
+    params:
+      - artifacts.06_evaluate.evaluate_on
+    outs:
+      - artifacts/06_evaluate/results
+      - artifacts/06_evaluate/best_model

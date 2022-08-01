@@ -108,65 +108,71 @@ stages:
       md5: cd624b8fa97a5a20b4e47266ce64b961
       size: 2007
     - path: src/05_train.py
-      md5: fd5a9dbf536ce9defd6186b5d7589c02
-      size: 9468
+      md5: 11865b762deb52e9c8bbce257491193f
+      size: 10977
     params:
       params.yaml:
         base.random_state:
         - 34
         hyperparams.balanced_bagging_classifer:
           model_name: bbc_model.sav
-          cv: 10
+          cv: 2
           verbose: 3
           n_estimators:
-          - 150
-          - 200
+          - 180
           sampling_strategy:
-          - 0.5
-          - 1.0
-          - 0.75
+          - 0.25
           replacement:
-          - true
           - false
         hyperparams.balanced_random_forest:
           model_name: brfc_model.sav
-          cv: 10
+          cv: 2
           verbose: 3
           n_estimators:
-          - 300
-          - 350
-          - 500
+          - 400
           criterion:
           - gini
-          - entropy
           max_depth:
           - 2
-          - 5
+          - 4
           - 1
           max_features:
           - auto
-          - log2
         hyperparams.easy_ensemble_classifier:
           model_name: eec_model.sav
-          cv: 10
+          cv: 2
           verbose: 3
           n_estimators:
-          - 150
-          - 200
+          - 180
           sampling_strategy:
-          - 0.5
-          - 1.0
-          - 0.75
+          - 0.25
           replacement:
-          - true
           - false
     outs:
-    - path: artifacts/05_train/bbc_model.sav
-      md5: 36a4c2b9f3416a350365f51831824c2e
-      size: 577551
-    - path: artifacts/05_train/brfc_model.sav
-      md5: baf315960b91084652d0feca1aee7dfc
-      size: 1169917
-    - path: artifacts/05_train/eec_model.sav
-      md5: 7d86d6df4a76472ffecc59880ba14439
-      size: 8050929
+    - path: artifacts/05_train
+      md5: 76be0462239e5015d568d341b07fcdad.dir
+      size: 9544961
+      nfiles: 4
+  06_evaluate:
+    cmd: python src/06_evaluate.py --config=params.yaml
+    deps:
+    - path: artifacts/05_train
+      md5: 76be0462239e5015d568d341b07fcdad.dir
+      size: 9544961
+      nfiles: 4
+    - path: src/06_evaluate.py
+      md5: 36844a5ca7702f3fccf748749662bba3
+      size: 4362
+    params:
+      params.yaml:
+        artifacts.06_evaluate.evaluate_on:
+        - roc_auc_score
+    outs:
+    - path: artifacts/06_evaluate/best_model
+      md5: b1f9d9b31b1271e6a869fcc13d3cf427.dir
+      size: 843786
+      nfiles: 1
+    - path: artifacts/06_evaluate/results
+      md5: b5d988cad4722b4e568dc5b29ed407dd.dir
+      size: 1521
+      nfiles: 3

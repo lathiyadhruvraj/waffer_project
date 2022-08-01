@@ -31,6 +31,11 @@ artifacts:
   05_train:
     train_dir : artifacts/05_train
   
+  06_evaluate:
+    results_dir : artifacts/06_evaluate/results
+    best_model_dir : artifacts/06_evaluate/best_model
+    evaluate_on : ["roc_auc_score"]  # other 2 are - f1_score, gmean_score  --> only one at a time
+  
 hyperparams:
   KNNImputer:
     n_neighbors : 3
@@ -38,26 +43,26 @@ hyperparams:
 
   balanced_random_forest:
     model_name : brfc_model.sav
-    cv : 10
+    cv : 2
     verbose : 3
-    n_estimators: [300, 350, 500]
-    criterion: ['gini', 'entropy']
-    max_depth: [2, 5, 1]  # range(2, 4, 1)
-    max_features: ['auto', 'log2']
+    n_estimators: [400]
+    criterion: ['gini']
+    max_depth: [2,4,1]  # range(2, 4, 1)
+    max_features: ['auto']
 
   balanced_bagging_classifer:
     model_name : bbc_model.sav
-    cv : 10
+    cv : 2
     verbose : 3
-    n_estimators: [150, 200]
-    sampling_strategy: [0.5, 1.0, 0.75]  # alpha = N_{samp-minority}/N_{samp-Majority} after  
-    replacement: [True, False]              #                      resampling.
+    n_estimators: [180]
+    sampling_strategy: [0.25]   # (0, 1])      # alpha = N_{samp-minority}/N_{samp-Majority} after  
+    replacement: [False]                      #                      resampling. 
     
   easy_ensemble_classifier:
     model_name : eec_model.sav
-    cv : 10
+    cv : 2
     verbose : 3
-    n_estimators: [150, 200]
-    sampling_strategy: [0.5, 1.0, 0.75]  # alpha = N_{samp-minority}/N_{samp-Majority} after  
-    replacement: [True, False]              #                      resampling.
+    n_estimators: [180]
+    sampling_strategy: [0.25]   # (0, 1])  # alpha = N_{samp-minority}/N_{samp-Majority} after  
+    replacement: [False]                       #                      resampling.
     
