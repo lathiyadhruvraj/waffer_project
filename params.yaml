@@ -23,6 +23,8 @@ artifacts:
   03_preprocess:
     preprocess_dir : artifacts/03_preprocess
     null_cols_fname : null_values.csv
+    drop_cols_fname : cols_to_drop.csv
+    drop_0std_fname : zero_std_cols.csv
     preprocessed_files : artifacts/03_preprocess/preprocessed_files
 
   04_split_data:
@@ -66,3 +68,4 @@ hyperparams:
     sampling_strategy: [0.25]   # (0, 1])  # alpha = N_{samp-minority}/N_{samp-Majority} after  
     replacement: [False]                       #                      resampling.
     
+

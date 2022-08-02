@@ -4,8 +4,8 @@ stages:
     cmd: python src/01_load_and_save.py --config=params.yaml
     deps:
     - path: src/01_load_and_save.py
-      md5: 7631ec42d54e94e3752c3d4307121796
-      size: 2032
+      md5: 115aa2a3f5528eb5a03d34257caf1892
+      size: 2116
     params:
       params.yaml:
         s3_data_source.bucket_folder_name: waffer_batch_files
@@ -55,10 +55,12 @@ stages:
       size: 3036137
       nfiles: 9
     - path: src/03_preprocess.py
-      md5: cfcc97a1cb3b088dda24ec57d5782d74
-      size: 6643
+      md5: 3a2278fd0a88255e9dc55123b37dc269
+      size: 7167
     params:
       params.yaml:
+        artifacts.03_preprocess.drop_0std_fname: zero_std_cols.csv
+        artifacts.03_preprocess.drop_cols_fname: cols_to_drop.csv
         artifacts.03_preprocess.null_cols_fname: null_values.csv
         artifacts.03_preprocess.preprocess_dir: artifacts/03_preprocess
         artifacts.03_preprocess.preprocessed_files: artifacts/03_preprocess/preprocessed_files
@@ -150,15 +152,15 @@ stages:
           - false
     outs:
     - path: artifacts/05_train
-      md5: 76be0462239e5015d568d341b07fcdad.dir
-      size: 9544961
+      md5: 7409e807a49a58a3444dc2b6c59838a7.dir
+      size: 9544611
       nfiles: 4
   06_evaluate:
     cmd: python src/06_evaluate.py --config=params.yaml
     deps:
     - path: artifacts/05_train
-      md5: 76be0462239e5015d568d341b07fcdad.dir
-      size: 9544961
+      md5: 7409e807a49a58a3444dc2b6c59838a7.dir
+      size: 9544611
       nfiles: 4
     - path: src/06_evaluate.py
       md5: 36844a5ca7702f3fccf748749662bba3
@@ -169,10 +171,10 @@ stages:
         - roc_auc_score
     outs:
     - path: artifacts/06_evaluate/best_model
-      md5: b1f9d9b31b1271e6a869fcc13d3cf427.dir
-      size: 843786
+      md5: 430378c21a27190f8544ec44b0841108.dir
+      size: 838828
       nfiles: 1
     - path: artifacts/06_evaluate/results
-      md5: b5d988cad4722b4e568dc5b29ed407dd.dir
+      md5: f338e94f47a0400ddf37527f0595620b.dir
       size: 1521
       nfiles: 3

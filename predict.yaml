@@ -1,0 +1,21 @@
+predict:
+  valid_and_preprocess:
+    valid_and_preprocess_dir : predict/valid_and_preprocess
+    good_files_dir : predict/good_files
+    bad_files_dir : predict/bad_files
+
+    remove_cols : ['Wafer']
+    preprocess_dir : predict/preprocess
+    drop_0std_fname : artifacts/03_preprocess/zero_std_cols.csv
+    cols_to_drop : artifacts/03_preprocess/cols_to_drop.csv
+    preprocessed_files : predict/preprocessed_files
+
+    # target_col : Good/Bad
+  files_for_pred : predict/files_for_prediction
+  
+  model_dir: artifacts/06_evaluate/best_model
+
+hyperparams:      # should not be changed
+  KNNImputer:
+    n_neighbors : 3
+    weights : uniform

@@ -1,6 +1,6 @@
 import os
 import boto3
-from utils.common_utils import read_params, clean_prev_dirs_if_exists
+from utils.common_utils import read_params, clean_prev_dirs_if_exists, create_dirs
 import argparse
 from dotenv import load_dotenv
 
@@ -15,7 +15,8 @@ def get_data_from_bucket(config):
     bucket_folder_name = config['s3_data_source']['bucket_folder_name']
 
     try:
-        clean_prev_dirs_if_exists(os.path.join(root_dir, bucket_folder_name))
+        clean_prev_dirs_if_exists([os.path.join(root_dir, bucket_folder_name)])
+        create_dirs([os.path.join(root_dir, bucket_folder_name)])
         my_bucket = s3.Bucket(s3_bucket_name)
         print("Downloading Files from s3 bucket")
         i = 1
@@ -40,6 +41,7 @@ if __name__ == "__main__":
         config = read_params(config_path)
 
         load_dotenv()
+
         Access_key_ID = os.getenv('Access_key_ID')
         Secret_access_key = os.getenv('Secret_access_key')
 

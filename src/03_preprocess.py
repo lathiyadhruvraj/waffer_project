@@ -1,5 +1,6 @@
 import argparse
 import os 
+import csv
 from utils.common_utils import read_params, create_dirs, clean_prev_dirs_if_exists
 import pandas as pd
 from tqdm import tqdm
@@ -81,20 +82,25 @@ class Preprocess():
 
    #============================= Remove 0 std cols ===================================#
 
-    def __get_columns_with_zero_std_deviation(self, data):
+    def __get_columns_with_zero_std_deviation(self, data, fname):
         columns=data.columns
         data_n = data.describe()
-        col_to_drop=[]
+        
         try:
+            col_to_drop=[]
             for x in columns:
                 if (data_n[x]['std'] < 0.001) and (data_n[x]['std'] > -0.001): # check if standard deviation is zero
                 # if data_n[x]['std'] == 0:
                     col_to_drop.append(x)  # prepare the list of columns with standard deviation zero
+            
+            df = pd.DataFrame(col_to_drop) 
+            df.to_csv(os.path.join(self.preprocess_dir, fname), index=False, header=True)
+            
             return col_to_drop
         except Exception as e:
             raise e
     
-    def __high_correlation_drop(self, data):
+    def __high_correlation_drop(self, data, fname):
         try:	    
             # Create correlation matrix
             corr_matrix = data.corr().abs()
@@ -104,9 +110,10 @@ class Preprocess():
 
             # Find features with correlation greater than 0.95
             to_drop = [column for column in upper.columns if any(upper[column] > 0.95)]
-
-            # Drop features 
             data.drop(to_drop, axis=1, inplace=True)
+
+            df = pd.DataFrame(to_drop) 
+            df.to_csv(os.path.join(self.preprocess_dir, fname), index=False, header=True)
 
         except Exception as e:
             raise e
@@ -139,10 +146,12 @@ class Preprocess():
                 weights = self.config['hyperparams']['KNNImputer']['weights']
                 X = self.__impute_missing_values(X, n_neighbors, weights)
 
-            col_to_drop = self.__get_columns_with_zero_std_deviation(X)
+            drop_0std_fname = self.config["artifacts"]["03_preprocess"]["drop_0std_fname"]
+            col_to_drop = self.__get_columns_with_zero_std_deviation(X, drop_0std_fname)
             X = self.__remove_columns(X, col_to_drop)
 
-            self.__high_correlation_drop(X)
+            drop_cols_fname = self.config["artifacts"]["03_preprocess"]["drop_cols_fname"]
+            self.__high_correlation_drop(X, drop_cols_fname)
             
             Y = Y.replace(-1, 0)
             X.to_csv(os.path.join(self.preprocessed_files_dir, "X_all.csv"), index=False, header=False)

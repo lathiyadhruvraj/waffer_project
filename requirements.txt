@@ -12,5 +12,6 @@ numpy
 sklearn
 tqdm
 imbalanced-learn
-mlflow
-optuna
+# mlflow
+# optuna
+streamlit
