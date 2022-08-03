@@ -7,7 +7,7 @@ from predict.check_files import main
 import yaml
 import pickle
 
-
+# Necessary args to parse from predict.yaml
 args = argparse.ArgumentParser()
 args.add_argument('--config', default='predict.yaml')
 args.add_argument('--schema', default='schema.yaml')
@@ -30,26 +30,57 @@ model_path = os.path.join(model_dir, model_name[0])
 loaded_model = pickle.load(open(model_path, 'rb'))
 pred_file_dir = config['predict']['valid_and_preprocess']['preprocessed_files']
 
+# Setting Background for Streamlit
+def add_bg_from_url():
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://cdn.pixabay.com/photo/2019/04/24/11/27/flowers-4151900_960_720.jpg");
+             background-attachment: fixed;
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
 
-st.title("Wafer Prediction Project")
+add_bg_from_url() 
 
-choice = st.radio ("Choose From Below Options: ", ["Upload Own File Here", "Show Available Files"])
+# info customization
+def display_info(txt, color="green"):
+    st.markdown(f"""<p style='background-color:{color};
+                                           color:white;
+                                           font-size:18px;
+                                           border-radius:3px;
+                                           line-height:60px;
+                                           padding-left:17px;
+                                           opacity:0.6'>
+                                           {txt}</style>
+                                           <br></p>""" 
+                ,unsafe_allow_html=True) 
+
+# Contents on Page
+st.title("Wafer Prediction Project \n")
+
+col1, col2 = st.columns(2)
+choice = col1.radio (("Choose From Below Options: "), ["Show Available Files", "Upload Own File Here"])
 
 try:
     if choice == "Show Available Files":
     
         files_dir = os.listdir(config['predict']['files_for_pred'])
         
-        chosen_file = st.radio ("Choose From Below Options: ", files_dir)
+        chosen_file = col2.radio ("\n Choose From Below Options: ", files_dir)
 
-        st.write("PREDICTION OF ", chosen_file)
+        st.subheader(f"PREDICTION OF {chosen_file}")
 
         pred_file_path = os.path.join(config['predict']['files_for_pred'], chosen_file)
         shutil.copy(pred_file_path, save_file_dir)
 
         status, e = main()
         if status:
-            st.success(e)
+            display_info(e, "green")
 
             pred_preprocessed = os.path.join(pred_file_dir, "predict_file.csv")
             pred_file = pd.read_csv(pred_preprocessed)
@@ -63,29 +94,29 @@ try:
         
         else:
             # st.error(e)
-            st.error("FILE VALIDATION FAILED - CHANGE FILE")
-            st.warning("Only 591 columns allowed")
+            display_info("FILE VALIDATION FAILED - CHANGE FILE", "red")
+            display_info("Cross Check:-Must have 591 columns", "blue")
         
     
     if choice == "Upload Own File Here":
-        st.subheader("Drag and Drop your File ")
-        csv_file = st.file_uploader("Upload csv file", type=["csv"])
+        col2.subheader("Drag and Drop your File ")
+        csv_file = col2.file_uploader("Upload csv file", type=["csv"])
 
         if csv_file is not None:
 
             # To See details
             file_details = {"filename":csv_file.name, "filetype":csv_file.type,
                             "filesize":csv_file.size}
-            st.write(file_details)
+            col2.write(file_details)
             
-            if st.button("Process"):
+            if col2.button("Process"):
                 df = pd.read_csv(csv_file)
                 st.dataframe(df)
                 df.to_csv(os.path.join(save_file_dir, csv_file.name), index=None)
 
                 status, e = main()
                 if status :
-                    st.success(e)
+                    display_info(e, "green")
                     
                     pred_file_path = os.path.join(pred_file_dir, "predict_file.csv")
                     pred_file = pd.read_csv(pred_file_path)
@@ -98,8 +129,8 @@ try:
 
                 else:
                     # st.error(e)
-                    st.error("FILE VALIDATION FAILED - CHANGE FILE")
-                    st.warning("Only 591 columns allowed")
+                    display_info("FILE VALIDATION FAILED - CHANGE FILE", "red")
+                    display_info("Cross Check:- Must have 591 columns", "blue")
     
 except Exception as e:
     raise e

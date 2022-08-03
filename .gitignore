@@ -136,6 +136,6 @@ src/00_extra.py
 predict/bad_files
 
 predict/good_files
-predict/preprocessed_files
 predict/files_for_prediction
 predict/valid_and_preprocess
+predict/preprocessed_files
