@@ -8,4 +8,5 @@ Machine Learning Project - Waffer Project --> Predict the waffer is faulty or no
 
 ### General overview
 
-![path followed](https://raw.github.com/lathiyadhruvraj/waffer_project/screenshots/path.PNG)
+## wokflow -
+<img src="screenshots\path.PNG" alt="workflow" width="70%">
