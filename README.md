@@ -8,4 +8,4 @@ Machine Learning Project - Waffer Project --> Predict the waffer is faulty or no
 
 ### General overview
 
-![path followed](screenshots\path.PNG)
+![path followed](https://raw.github.com/lathiyadhruvraj/waffer_project/screenshots/path.PNG)
