@@ -1,6 +1,7 @@
 # waffer_project
 Machine Learning Project - Waffer Project --> Predict the waffer is faulty or not based on the readings of various sensors available.
 
+### [datafiles for prediction](https://drive.google.com/drive/folders/1ByvJCBZfAUDeW56UdO53ZEn79B1P-zoR?usp=sharing)
 
 ## [deployed wafer app](http://wafer-env.eba-prfqfmkg.ap-south-1.elasticbeanstalk.com/)
 <img src="screenshots\p1.PNG" alt="p1" width="100%">
